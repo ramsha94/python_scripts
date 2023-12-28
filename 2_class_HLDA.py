@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import numpy as np
 import numpy.ma as ma
 import itertools
@@ -13,7 +12,7 @@ fout=open('eigenvalues.dat','w')
 fout2=open('eigenvectors.dat','w')
 
 for j in range(1,Npoints+1):
-    #state 1
+    #reading MD data for state 1
     f1=open('1/COLVAR','r')
     data1= np.loadtxt(f1,usecols=range(1,N+1),skiprows=Row_skip)
     mu1=np.zeros(N)
@@ -22,7 +21,7 @@ for j in range(1,Npoints+1):
         mu1[i] = np.mean(data1[0:j*Nstep1,i])
     Cov1 = np.cov(np.transpose(data1))
 
-    #state 2
+    #Reading MD data for state 2
     f2=open('2/COLVAR','r')
     data2= np.loadtxt(f2,usecols=range(1,N+1),skiprows=Row_skip)
     mu2=np.zeros(N)
@@ -31,7 +30,7 @@ for j in range(1,Npoints+1):
         mu2[i] = np.mean(data2[0:j*Nstep2,i])
     Cov2 = np.cov(np.transpose(data2))
 
-#   CALCULATE POOLED COVARIANCE MATRIX AS SUM OF THE INVERSES OF SINGLE COVARINACES 
+#   Computing the covariance matrix 
     Cov_inv = np.linalg.inv(Cov1) + np.linalg.inv(Cov2)
 
 #   CALCULATE CENTROID OF THE DISTRIBUTIONS
@@ -57,7 +56,6 @@ for j in range(1,Npoints+1):
     wt = np.real(wt)
     vt = np.real(vt)
 
-#   THIS IS A PRINTING TRICK!
     vt = np.transpose(vt)
 
     wt = wt.tolist()
@@ -73,11 +71,8 @@ for j in range(1,Npoints+1):
     txt=str(time)+'\t'+s+'\n'
     fout2.write(txt)
 
-print('Eigenvalues and eigenvector of Sigma_W^-1 * Sigma_B   ===> ', i)
 for i in range(0,N):
-    #print wt[i], vt[:,i]
-    #print "%.3f,"*len(wt[i]) % tuple(wt[i]), "%.3f,"*len(vt[i]) % tuple(vt[i])
-    print(wt[i], "%.3f,"*len(vt[i]) % tuple(vt[i]))
+    print(wt[i], "%.3f,"*len(vt[i]) % tuple(vt[i])) #For printing Eigenvalues and Eigenvectors
 
 fout.close()
 fout2.close()
